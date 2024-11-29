@@ -19,6 +19,13 @@ struct Pembelian {
     int harga;
 };
 
+void tampilkanFrame(const string& teks){
+    int panjang = teks.length();
+    cout<< string(panjang + 9, '*') <<endl;
+    cout<< " * & " << teks << " & *" <<endl;
+    cout<< string(panjang + 9, '*') << endl;
+}
+
 void tampilkanPembelian(const vector<Pembelian>& daftar_pembelian) {
     if (daftar_pembelian.empty()) {
         cout << "\nBelum ada sepatu yang dibeli.\n";
@@ -35,7 +42,38 @@ void tampilkanPembelian(const vector<Pembelian>& daftar_pembelian) {
     cout << endl;
 }
 
+void hapusPembelian(vector<Pembelian>& daftar_pembelian) {
+    if (daftar_pembelian.empty()) {
+        cout << "\nTidak ada sepatu dalam keranjang untuk dihapus.\n";
+        return;
+    }
+
+    tampilkanPembelian(daftar_pembelian);
+    
+    // tampilan hapus produk di keranjang
+    int index_hapus;
+    cout << "Masukkan nomor sepatu yang ingin dihapus dari keranjang: ";
+    cin >> index_hapus;
+
+    // validasi input dari hapus
+    if (cin.fail() || index_hapus < 1 || index_hapus > daftar_pembelian.size()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Pilihan tidak valid. Kembali ke menu.\n";
+        return;
+    }
+
+    // Hapus item dari daftar pembelian
+    daftar_pembelian.erase(daftar_pembelian.begin() + index_hapus - 1);
+    cout << "Sepatu berhasil dihapus dari keranjang.\n";
+}
+
 int main() {
+
+    string pesan = "Selamat datang, Selamat berbelanja!";
+    tampilkanFrame(pesan);
+    cout<<endl;
+    
     // Daftar sepatu
     vector<Sepatu> daftar_sepatu = {
         {"Nike", 13000, {40, 41, 42}},
@@ -110,6 +148,14 @@ int main() {
 
         // Tampilkan daftar pembelian saat ini
         tampilkanPembelian(daftar_pembelian);
+
+         // opsi untuk menghapus sepatu dari keranjang atau melanjutkan pembelian
+        cout << "\nApakah Anda ingin menghapus sepatu dari keranjang? (y/n): ";
+        char opsi_hapus;
+        cin >> opsi_hapus;
+        if (opsi_hapus == 'y' || opsi_hapus == 'Y') {
+            hapusPembelian(daftar_pembelian);
+        }
 
         cout << "\nIngin membeli sepatu lagi? (y/n): ";
         cin >> lanjut;
