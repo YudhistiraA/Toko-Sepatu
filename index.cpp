@@ -19,11 +19,11 @@ struct Pembelian {
     int harga;
 };
 
-void tampilkanFrame(const string& teks){
+void tampilkanFrame(const string& teks) {
     int panjang = teks.length();
-    cout<< string(panjang + 9, '*') <<endl;
-    cout<< " * & " << teks << " & *" <<endl;
-    cout<< string(panjang + 9, '*') << endl;
+    cout << string(panjang + 9, '*') << endl;
+    cout << " * & " << teks << " & *" << endl;
+    cout << string(panjang + 9, '*') << endl;
 }
 
 void tampilkanPembelian(const vector<Pembelian>& daftar_pembelian) {
@@ -49,7 +49,7 @@ void hapusPembelian(vector<Pembelian>& daftar_pembelian) {
     }
 
     tampilkanPembelian(daftar_pembelian);
-    
+
     // tampilan hapus produk di keranjang
     int index_hapus;
     cout << "Masukkan nomor sepatu yang ingin dihapus dari keranjang: ";
@@ -69,11 +69,15 @@ void hapusPembelian(vector<Pembelian>& daftar_pembelian) {
 }
 
 int main() {
-
     string pesan = "Selamat datang, Selamat berbelanja!";
     tampilkanFrame(pesan);
-    cout<<endl;
-    
+    cout << endl;
+
+    // Meminta input nama kasir
+    string nama_kasir;
+    cout << "Masukkan nama kasir: ";
+    getline(cin, nama_kasir);
+
     // Daftar sepatu
     vector<Sepatu> daftar_sepatu = {
         {"Nike", 13000, {40, 41, 42}},
@@ -149,7 +153,7 @@ int main() {
         // Tampilkan daftar pembelian saat ini
         tampilkanPembelian(daftar_pembelian);
 
-         // opsi untuk menghapus sepatu dari keranjang atau melanjutkan pembelian
+        // opsi untuk menghapus sepatu dari keranjang atau melanjutkan pembelian
         cout << "\nApakah Anda ingin menghapus sepatu dari keranjang? (y/n): ";
         char opsi_hapus;
         cin >> opsi_hapus;
@@ -185,20 +189,78 @@ int main() {
     int total_setelah_diskon = total_harga - static_cast<int>(diskon);
     cout << "Total yang harus dibayar: Rp " << total_setelah_diskon << "\n";
 
+    // Meminta input nama pembeli
+    string nama_pembeli;
+    cout << "Masukkan nama Anda sebagai bukti pembayaran: ";
+    getline(cin, nama_pembeli);
+
     // Meminta input uang pembayaran
     int uang_pembayaran;
-    cout << "\nMasukkan jumlah uang pembayaran: ";
-    cin >> uang_pembayaran;
+    do {
+        cout << "\nMasukkan jumlah uang pembayaran: ";
+        cin >> uang_pembayaran;
 
-    // Validasi uang pembayaran
-    if (cin.fail() || uang_pembayaran < total_setelah_diskon) {
-        cout << "Uang yang diberikan tidak mencukupi. Program selesai.\n";
-        return 1;
+        // Validasi uang pembayaran
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Input tidak valid. Coba lagi.\n";
+            continue; // Kembali ke awal loop
+        }
+
+        if (uang_pembayaran < total_setelah_diskon) {
+            int sisa_bayar = total_setelah_diskon - uang_pembayaran;
+            cout << "Uang yang diberikan tidak mencukupi. Anda masih perlu membayar: Rp " 
+                 << sisa_bayar << endl;
+
+            // Meminta sisa uang yang harus dibayar
+            int sisa_uang;
+            cout << "Masukkan sisa uang yang harus dibayar: ";
+            cin >> sisa_uang;
+
+            // Validasi sisa uang
+            if (cin.fail() || sisa_uang < 0) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Input tidak valid. Coba lagi.\n";
+                continue; // Kembali ke awal loop
+            }
+
+            uang_pembayaran += sisa_uang; // Tambahkan sisa uang ke total uang yang dibayarkan
+
+            // Jika setelah menambahkan sisa uang, total sudah mencukupi
+            if (uang_pembayaran >= total_setelah_diskon) {
+                // Hitung kembalian
+                int kembalian = uang_pembayaran - total_setelah_diskon;
+                cout << "Kembalian Anda: Rp " << kembalian << "\n";
+                break; // Keluar dari loop jika pembayaran cukup
+            } else {
+                cout << "Uang yang diberikan masih tidak mencukupi. Coba lagi.\n";
+            }
+        } else {
+            // Hitung kembalian
+            int kembalian = uang_pembayaran - total_setelah_diskon;
+            cout << "Kembalian Anda: Rp " << kembalian << "\n";
+            break; // Keluar dari loop jika pembayaran cukup
+        }
+    } while (true);
+
+    // Menampilkan bukti pembayaran
+    cout << "\n--- Bukti Pembayaran ---\n";
+    cout << "Kasir: " << nama_kasir << endl;
+    cout << "Pembeli: " << nama_pembeli << endl;
+
+    cout << "\n--- Rincian Pembelian ---\n";
+    for (const auto& pembelian : daftar_pembelian) {
+        cout << "Sepatu: " << pembelian.nama_sepatu
+             << " | Ukuran: " << pembelian.ukuran
+             << " | Harga: Rp " << pembelian.harga << endl;
     }
-
-    // Hitung kembalian
-    int kembalian = uang_pembayaran - total_setelah_diskon;
-    cout << "Kembalian Anda: Rp " << kembalian << "\n";
-
+    cout << "Total Harga: Rp " << total_setelah_diskon << endl;
+    cout << "Kembalian: Rp " << (uang_pembayaran - total_setelah_diskon) << endl;
+    cout << "\nTerima kasih atas kunjungan Anda!" << endl;
+    cout << "Salam, semoga hari Anda menyenangkan!" << endl;
+	cin.get();
+    cin.get();
     return 0;
 }
