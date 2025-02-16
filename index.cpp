@@ -84,7 +84,10 @@ int main() {
         {"Adidas", 3000, {39, 40, 43}},
         {"Puma", 13000, {38, 40, 44}}
     };
-
+	
+	char beli_lagi; //buat nanya pgn beli lagi apa ga
+	
+	do {
     vector<Pembelian> daftar_pembelian; // Menyimpan semua pilihan pengguna
     char lanjut;                        // Untuk mengulang pembelian
 
@@ -166,7 +169,7 @@ int main() {
 
         // Pastikan buffer bersih
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
+	 	system("cls");
     } while (lanjut == 'y' || lanjut == 'Y');
 
     // Menampilkan skema pembayaran
@@ -260,7 +263,14 @@ int main() {
     cout << "Kembalian: Rp " << (uang_pembayaran - total_setelah_diskon) << endl;
     cout << "\nTerima kasih atas kunjungan Anda!" << endl;
     cout << "Salam, semoga hari Anda menyenangkan!" << endl;
-	cin.get();
-    cin.get();
+    
+    // nanya mau beli lagi apa ga
+    cout<< "\nApakah anda ingin membeli sepatu lagi? (y/n): ";
+    cin >> beli_lagi;
+    
+    //pastikan buffer bersih
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    system("cls");
+} while (beli_lagi == 'y' || beli_lagi == 'Y');
     return 0;
 }
